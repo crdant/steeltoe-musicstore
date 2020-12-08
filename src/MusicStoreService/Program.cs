@@ -29,7 +29,7 @@ namespace MusicStore
                 .ConfigureWebHostDefaults(webbuilder => webbuilder.UseStartup<Startup>())
                 .ConfigureAppConfiguration(AddRemoteConfiguration)
                 .AddAllActuators()
-                .AddDiscoveryClient()
+                .AddDiscoveryClient();
 
         private static void SeedDatabase(IHost host)
         {
