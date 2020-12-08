@@ -37,7 +37,8 @@
     <PackageReference Include="Steeltoe.Connector.ConnectorCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Connector.EFCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Discovery.Eureka" Version="3.0.1" />
-    <PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerCore" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.KubernetesCore" Version= "3.0.1"/>
+    <!--PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerCore" Version="3.0.1" /> -->
     <PackageReference Include="Steeltoe.Management.CloudFoundryCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Management.TracingCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Security.DataProtection.RedisCore" Version="3.0.1" />
