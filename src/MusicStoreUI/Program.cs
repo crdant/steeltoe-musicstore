@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MusicStoreUI.Models;
 using Steeltoe.Discovery.Client;
-using Steeltoe.Extensions.Configuration.ConfigServer;
+using Steeltoe.Extensions.Configuration.Kubernetes;
 using Steeltoe.Management.Endpoint;
 using System;
 
@@ -42,15 +42,7 @@ namespace MusicStoreUI
         private static Action<HostBuilderContext, IConfigurationBuilder> AddRemoteConfiguration =>
             (builderContext, configBuilder) =>
             {
-                if (builderContext.HostingEnvironment.EnvironmentName.Contains("Azure"))
-                {
-                    var settings = configBuilder.Build();
-                    configBuilder.AddAzureAppConfiguration(options => options.Connect(new Uri(settings["AppConfig:Endpoint"]), new ManagedIdentityCredential()));
-                }
-                else
-                {
-                    configBuilder.AddConfigServer(builderContext.HostingEnvironment.EnvironmentName, GetLoggerFactory());
-                }
+                configBuilder.AddKubernetes();
                 configBuilder.AddEnvironmentVariables();
                 configuration = configBuilder.Build();
             };
