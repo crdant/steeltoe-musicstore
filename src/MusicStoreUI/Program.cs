@@ -19,8 +19,14 @@ namespace MusicStoreUI
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            SeedDatabase(host);
-            host.Run();
+            if (isInitializationJob())
+            {
+              SeedDatabase(host);
+            }
+            else
+            {
+              host.Run();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -52,6 +58,9 @@ namespace MusicStoreUI
             IServiceCollection serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddConsole());
             return serviceCollection.BuildServiceProvider().GetService<ILoggerFactory>();
-        }
+        } 
+        
+        private static bool isInitializationJob() =>
+          System.Environment.GetEnvironmentVariable("INIT") != null;
     }
 }

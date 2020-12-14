@@ -67,19 +67,8 @@ namespace MusicStoreUI.Models
 #endif
         }
 
-        private static bool ShouldDropCreateDatabase()
-        {
-            string index = Environment.GetEnvironmentVariable("CF_INSTANCE_INDEX");
-            if (string.IsNullOrEmpty(index))
-            {
-                return true;
-            }
-            if (int.TryParse(index, out int indx))
-            {
-                if (indx > 0) return false;
-            }
-            return true;
-        }
+        private static bool ShouldDropCreateDatabase() =>
+            System.Environment.GetEnvironmentVariable("INIT") != null;
 
         const string imgUrl = "~/Images/placeholder.png";
         public static string ImageUrl { get { return imgUrl;  } }

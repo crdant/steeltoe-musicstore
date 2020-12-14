@@ -67,19 +67,8 @@ namespace ShoppingCartService.Models
         }
 
         public static Dictionary<int, CartItem> CartItems { get; set; } = new Dictionary<int, CartItem>();
-        private static bool ShouldDropCreateDatabase()
-        {
-            string index = Environment.GetEnvironmentVariable("CF_INSTANCE_INDEX");
-            if (string.IsNullOrEmpty(index))
-            {
-                return true;
-            }
-            int indx = -1;
-            if (int.TryParse(index, out indx))
-            {
-                if (indx > 0) return false;
-            }
-            return true;
-        }
+
+        private static bool ShouldDropCreateDatabase() =>
+          System.Environment.GetEnvironmentVariable("INIT") != null;
     }
 }
