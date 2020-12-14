@@ -10,6 +10,7 @@ using Steeltoe.Discovery.Client;
 using Steeltoe.Extensions.Configuration.Kubernetes;
 using Steeltoe.Management.Endpoint;
 using System;
+using Steeltoe.Extensions.Configuration.ConfigServer;
 
 namespace OrderService
 {
@@ -48,6 +49,7 @@ namespace OrderService
             (builderContext, configBuilder) =>
             {
                 configBuilder.AddKubernetes();
+                configBuilder.AddConfigServer();
                 configBuilder.AddEnvironmentVariables();
             };
 
