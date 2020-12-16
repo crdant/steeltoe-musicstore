@@ -54,11 +54,7 @@ namespace MusicStoreUI
 
             foreach (var section in Configuration.GetChildren())
             {
-              Console.WriteLine(section.Key + " = " + section.Value);
-              foreach (var child in section.GetChildren())
-              { 
-                Console.WriteLine(child.Key + " = " + child.Value);
-              }
+              dumpSection(section);
             }
             
             // services.AddDbContext<AccountsContext>(options => options.UseSqlServer(cstring));
@@ -126,6 +122,15 @@ namespace MusicStoreUI
 
             // Add Hystrix metrics stream to enable monitoring
             services.AddHystrixMetricsStream(Configuration);
+        }
+
+        private static void dumpSection(IConfigurationSection section)
+        {
+          Console.WriteLine(section.Path + " -> " + section.Key + " = " + section.Value);
+          foreach (var child in section.GetChildren())
+          {
+            dumpSection(section);
+          }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
