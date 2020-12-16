@@ -1,0 +1,388 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: musicstore
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: config-access
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  creationTimestamp: null
+  name: config-access
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: config-access
+subjects:
+- kind: ServiceAccount
+  name: musicstore
+  namespace: musicstore
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: actuator
+data:
+  management__endpoints__path: /actuator
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eurekaclient
+data:
+  eureka__client__serviceUrl: http://eurekaserver:8761/eureka
+  eureka__instance__healthCheckUrlPath: /actuator/health
+  eureka__instance__statusPageUrlPath: /actuator/info
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configclient
+data:
+  spring__cloud__config__uri: http://configserver:8888
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: musicservice
+spec:
+  selector:
+    matchLabels:
+      component: musicservice
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: musicservices
+        component: musicservice
+    spec:
+      serviceAccountName: musicstore
+      containers:
+      - name: musicservice
+        image: #@ "{}/{}/music-service:latest".format(data.values.registry.host, data.values.registry.project)
+        ports:
+        - containerPort: 8080
+        env:
+          - name: PORT
+            value: "8080"
+          - name: eureka__instance__hostName
+            value: "musicservice"
+          - name: spring__cloud__kubernetes__namespace
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        envFrom:
+          - configMapRef:
+              name: eurekaclient
+          - configMapRef:
+              name: configclient
+          - configMapRef:
+              name: actuator
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: musicservice-init
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: musicservices
+        component: musicservice
+    spec:
+      serviceAccountName: musicstore
+      restartPolicy: OnFailure
+      containers:
+      - name: musicservice
+        image: #@ "{}/{}/music-service:latest".format(data.values.registry.host, data.values.registry.project)
+        ports:
+        - containerPort: 8080
+        env:
+          - name: INIT
+            value: "true"
+          - name: spring__cloud__kubernetes__namespace
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        envFrom:
+          - configMapRef:
+              name: eurekaclient
+          - configMapRef:
+              name: configclient
+          - configMapRef:
+              name: actuator
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: musicservice
+spec:
+  ports:
+  - port: 8080
+  selector:
+    component: musicservice
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderservice
+spec:
+  selector:
+    matchLabels:
+      component: orderservice
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: musicservices
+        component: orderservice
+    spec:
+      serviceAccountName: musicstore
+      containers:
+      - name: orderservice
+        image: #@ "{}/{}/order-service:latest".format(data.values.registry.host, data.values.registry.project)
+        ports:
+        - containerPort: 8080
+        env:
+          - name: PORT
+            value: "8080"
+          - name: eureka__instance__hostName
+            value: "orderservice"
+          - name: spring__cloud__kubernetes__namespace
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        envFrom:
+          - configMapRef:
+              name: eurekaclient
+          - configMapRef:
+              name: configclient
+          - configMapRef:
+              name: actuator
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: orderservice-init
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: musicservices
+        component: musicservice
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: musicstore
+      containers:
+      - name: musicservice
+        image: #@ "{}/{}/order-service:latest".format(data.values.registry.host, data.values.registry.project)
+        ports:
+        - containerPort: 8080
+        env:
+          - name: INIT
+            value: "true"
+          - name: spring__cloud__kubernetes__namespace
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        envFrom:
+          - configMapRef:
+              name: eurekaclient
+          - configMapRef:
+              name: configclient
+          - configMapRef:
+              name: actuator
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orderservice
+spec:
+  ports:
+  - port: 8080
+  selector:
+    component: orderservice
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shoppingcartservice
+spec:
+  selector:
+    matchLabels:
+      component: shoppingcartservice
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: musicservices
+        component: shoppingcartservice
+    spec:
+      serviceAccountName: musicstore
+      containers:
+      - name: shoppingcartservice
+        image: #@ "{}/{}/cart-service:latest".format(data.values.registry.host, data.values.registry.project)
+        ports:
+        - containerPort: 8080
+        env:
+          - name: PORT
+            value: "8080"
+          - name: eureka__instance__hostName
+            value: "shoppingcartservice"
+          - name: spring__cloud__kubernetes__namespace
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        envFrom:
+          - configMapRef:
+              name: eurekaclient
+          - configMapRef:
+              name: configclient
+          - configMapRef:
+              name: actuator
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: shoppingcartservice-init
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: musicservices
+        component: musicservice
+    spec:
+      serviceAccountName: musicstore
+      restartPolicy: OnFailure
+      containers:
+      - name: musicservice
+        image: #@ "{}/{}/cart-service:latest".format(data.values.registry.host, data.values.registry.project)
+        ports:
+        - containerPort: 8080
+        env:
+          - name: INIT
+            value: "true"
+          - name: spring__cloud__kubernetes__namespace
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        envFrom:
+          - configMapRef:
+              name: eurekaclient
+          - configMapRef:
+              name: configclient
+          - configMapRef:
+              name: actuator
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shoppingcartservice
+spec:
+  ports:
+  - port: 8080
+  selector:
+    component: shoppingcartservice
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: musicstore
+spec:
+  selector:
+    matchLabels:
+      component: musicstore
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: musicstore
+        component: musicstore
+    spec:
+      serviceAccountName: musicstore
+      containers:
+      - name: musicstore
+        image: #@ "{}/{}/ui:latest".format(data.values.registry.host, data.values.registry.project)
+        ports:
+        - containerPort: 8080
+        env:
+          - name: PORT
+            value: "8080"
+          - name: eureka__instance__hostName
+            value: "musicstore"
+          - name: spring__cloud__kubernetes__namespace
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        envFrom:
+          - configMapRef:
+              name: eurekaclient
+          - configMapRef:
+              name: configclient
+          - configMapRef:
+              name: actuator
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: musicstore-init
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: musicservices
+        component: musicservice
+    spec:
+      serviceAccountName: musicstore
+      restartPolicy: OnFailure
+      containers:
+      - name: musicservice
+        image: #@ "{}/{}/ui:latest".format(data.values.registry.host, data.values.registry.project)
+        ports:
+        - containerPort: 8080
+        env:
+          - name: INIT
+            value: "true"
+          - name: spring__cloud__kubernetes__namespace
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        envFrom:
+          - configMapRef:
+              name: eurekaclient
+          - configMapRef:
+              name: configclient
+          - configMapRef:
+              name: actuator
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: musicstore
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: musicstore
+  type: LoadBalancer
