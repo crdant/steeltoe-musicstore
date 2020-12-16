@@ -17,6 +17,7 @@ using Steeltoe.Management.Tracing;
 using Steeltoe.Security.DataProtection;
 using System;
 using System.Linq;
+using Steeltoe.Connector.SqlServer.EFCore;
 using Command = MusicStoreUI.Services.HystrixCommands;
 
 namespace MusicStoreUI
@@ -54,7 +55,7 @@ namespace MusicStoreUI
             // services.AddDbContext<AccountsContext>(options => options.UseSqlServer(cstring));
             services.AddDbContext<AccountsContext>(options => options.UseSqlServer(Configuration));
             services.ConfigureApplicationCookie(options => options.AccessDeniedPath = "/Home/AccessDenied");
-            services.AddIdentity<ApplicationUseSqlServer, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<AccountsContext>()
                     .AddDefaultTokenProviders();
             services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
