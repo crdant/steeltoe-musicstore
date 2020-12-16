@@ -57,6 +57,7 @@ namespace MusicStoreUI
             {
               Console.WriteLine("Has SQL Server configuration");
               var section = Configuration.GetSection("sqlserver:credentials");
+              Console.WriteLine(section);
               foreach (var child in section.GetChildren())
               {
                 Console.WriteLine(child.Key + " = " + child.Value);
