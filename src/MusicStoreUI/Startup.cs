@@ -53,7 +53,7 @@ namespace MusicStoreUI
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             // services.AddDbContext<AccountsContext>(options => options.UseSqlServer(cstring));
-            if (Configuration.GetSection("sqlserver:credentials"))
+            if (Configuration.GetSection("sqlserver:credentials") != null )
             {
               var section = Configuration.GetSection("sqlserver:credentials");
               foreach (var child in section.GetChildren())
