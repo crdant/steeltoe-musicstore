@@ -53,6 +53,18 @@ namespace MusicStoreUI
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             // services.AddDbContext<AccountsContext>(options => options.UseSqlServer(cstring));
+            if (Configuration.GetSection("sqlserver:credentials"))
+            {
+              var section = Configuration.GetSection("sqlserver:credentials");
+              foreach (var child in section.GetChildren())
+              {
+                Console.WriteLine(child.Key + " = " + child.Value);
+              }
+            }
+            else
+            {
+              Console.WriteLine("No SQL Server configuration");
+            }
             services.AddDbContext<AccountsContext>(options => options.UseSqlServer(Configuration));
             services.ConfigureApplicationCookie(options => options.AccessDeniedPath = "/Home/AccessDenied");
             services.AddIdentity<ApplicationUser, IdentityRole>()
