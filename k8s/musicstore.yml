@@ -405,7 +405,7 @@ spec:
           service:
             name: musicstore
             port:
-              number: "8080"
+              number: 8080
         pathType: Prefix
         path: /
   tls:
