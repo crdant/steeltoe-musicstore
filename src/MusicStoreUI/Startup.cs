@@ -55,6 +55,10 @@ namespace MusicStoreUI
             foreach (var section in Configuration.GetChildren())
             {
               Console.WriteLine(section.Key + " = " + section.Value);
+              foreach (var child in section.GetChildren())
+              { 
+                Console.WriteLine(child.Key + " = " + child.Value);
+              }
             }
             
             // services.AddDbContext<AccountsContext>(options => options.UseSqlServer(cstring));
