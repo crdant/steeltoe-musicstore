@@ -52,9 +52,9 @@ namespace MusicStoreUI
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             // services.AddDbContext<AccountsContext>(options => options.UseSqlServer(cstring));
-            services.AddDbContext<AccountsContext>(options => options.UseMySql(Configuration));
+            services.AddDbContext<AccountsContext>(options => options.UseSqlServer(Configuration));
             services.ConfigureApplicationCookie(options => options.AccessDeniedPath = "/Home/AccessDenied");
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUseSqlServer, IdentityRole>()
                     .AddEntityFrameworkStores<AccountsContext>()
                     .AddDefaultTokenProviders();
             services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
