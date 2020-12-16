@@ -129,7 +129,7 @@ namespace MusicStoreUI
           Console.WriteLine(section.Path + " -> " + section.Key + " = " + section.Value);
           foreach (var child in section.GetChildren())
           {
-            dumpSection(section);
+            dumpSection(child);
           }
         }
 
