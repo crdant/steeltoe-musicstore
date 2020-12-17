@@ -188,7 +188,7 @@ spec:
     metadata:
       labels:
         app: musicservices
-        component: musicservice
+        component: orderservice
     spec:
       restartPolicy: OnFailure
       serviceAccountName: musicstore
@@ -270,7 +270,7 @@ spec:
     metadata:
       labels:
         app: musicservices
-        component: musicservice
+        component: shoppingcartservice
     spec:
       serviceAccountName: musicstore
       restartPolicy: OnFailure
@@ -351,8 +351,8 @@ spec:
   template:
     metadata:
       labels:
-        app: musicservices
-        component: musicservice
+        app: musicstore
+        component: musicstore
     spec:
       serviceAccountName: musicstore
       restartPolicy: OnFailure
