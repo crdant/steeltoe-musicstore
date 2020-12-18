@@ -75,7 +75,7 @@ spec:
       serviceAccountName: musicstore
       containers:
       - name: musicservice
-        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.serviceImage)
+        image: #@ data.values.musicstore.serviceImage
         ports:
         - containerPort: 8080
         env:
@@ -111,7 +111,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: musicservice
-        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.serviceImage)
+        image: #@ data.values.musicstore.serviceImage
         ports:
         - containerPort: 8080
         env:
@@ -157,7 +157,7 @@ spec:
       serviceAccountName: musicstore
       containers:
       - name: orderservice
-        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.orderImage)
+        image: #@ data.values.musicstore.orderImage
         ports:
         - containerPort: 8080
         env:
@@ -193,7 +193,7 @@ spec:
       serviceAccountName: musicstore
       containers:
       - name: musicservice
-        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.orderImage)
+        image: #@ data.values.musicstore.orderImage
         ports:
         - containerPort: 8080
         env:
@@ -239,7 +239,7 @@ spec:
       serviceAccountName: musicstore
       containers:
       - name: shoppingcartservice
-        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.cartImage)
+        image: #@ data.values.musicstore.cartImage
         ports:
         - containerPort: 8080
         env:
@@ -275,7 +275,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: musicservice
-        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.cartImage)
+        image: #@ data.values.musicstore.cartImage
         ports:
         - containerPort: 8080
         env:
@@ -321,7 +321,7 @@ spec:
       serviceAccountName: musicstore
       containers:
       - name: musicstore
-        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.uiImage)
+        image: #@ data.values.musicstore.uiImage
         ports:
         - containerPort: 8080
         env:
@@ -357,7 +357,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: musicservice
-        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.uiImage)
+        image: #@ data.values.musicstore.uiImage
         ports:
         - containerPort: 8080
         env:
