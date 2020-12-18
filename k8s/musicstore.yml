@@ -76,7 +76,7 @@ spec:
       serviceAccountName: musicstore
       containers:
       - name: musicservice
-        image: #@ "{}/{}/music-service:latest".format(data.values.registry.host, data.values.registry.project)
+        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.serviceImage)
         ports:
         - containerPort: 8080
         env:
@@ -112,7 +112,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: musicservice
-        image: #@ "{}/{}/music-service:latest".format(data.values.registry.host, data.values.registry.project)
+        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.serviceImage)
         ports:
         - containerPort: 8080
         env:
@@ -158,7 +158,7 @@ spec:
       serviceAccountName: musicstore
       containers:
       - name: orderservice
-        image: #@ "{}/{}/order-service:latest".format(data.values.registry.host, data.values.registry.project)
+        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.orderImage)
         ports:
         - containerPort: 8080
         env:
@@ -194,7 +194,7 @@ spec:
       serviceAccountName: musicstore
       containers:
       - name: musicservice
-        image: #@ "{}/{}/order-service:latest".format(data.values.registry.host, data.values.registry.project)
+        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.orderImage)
         ports:
         - containerPort: 8080
         env:
@@ -240,7 +240,7 @@ spec:
       serviceAccountName: musicstore
       containers:
       - name: shoppingcartservice
-        image: #@ "{}/{}/cart-service:latest".format(data.values.registry.host, data.values.registry.project)
+        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.cartImage)
         ports:
         - containerPort: 8080
         env:
@@ -276,7 +276,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: musicservice
-        image: #@ "{}/{}/cart-service:latest".format(data.values.registry.host, data.values.registry.project)
+        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.cartImage)
         ports:
         - containerPort: 8080
         env:
@@ -322,7 +322,7 @@ spec:
       serviceAccountName: musicstore
       containers:
       - name: musicstore
-        image: #@ "{}/{}/ui:latest".format(data.values.registry.host, data.values.registry.project)
+        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.uiImage)
         ports:
         - containerPort: 8080
         env:
@@ -358,7 +358,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: musicservice
-        image: #@ "{}/{}/ui:latest".format(data.values.registry.host, data.values.registry.project)
+        image: #@ "{}/{}/{}".format(data.values.registry.host, data.values.registry.project, data.values.musicstore.uiImage)
         ports:
         - containerPort: 8080
         env:
@@ -410,6 +410,6 @@ spec:
         path: /
   tls:
   - hosts:
-    - musicstore.serrano.tanzu.shortrib.io
-    secretName: musicstore.serrano.tanzu.shortrib.io-tls
+    - #@ data.values.musicstore.host
+    secretName: #@ "{}-tls".format(data.values.musicstore.host)
 
