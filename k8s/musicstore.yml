@@ -32,7 +32,6 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: musicstore
-  namespace: musicstore
 ---
 apiVersion: v1
 kind: ConfigMap
